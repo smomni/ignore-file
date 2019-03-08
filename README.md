@@ -1,4 +1,4 @@
-INSERT-TRAVIS-BADGE
+[![Build Status](https://travis-ci.org/smomni/ignore-file.svg?branch=master)](https://travis-ci.org/smomni/ignore-file)
 
 # ignore-file
 
@@ -6,6 +6,14 @@ Ignore glob-style patterns similar to .gitignore and .dockerignore.
 
 ## Usage
 
+```python
+from ignore import iterdir
+from pathlib import Path
+
+dir_path = Path('dir')
+for path in iterdir(dir_path, ignore_file='.myignore'):
+    print(path)
+```
 
 
 ## Installing
@@ -17,7 +25,7 @@ You can use git clone and pip to install from sources:
 ```bash
 git clone https://github.com/smomni/ignore-files
 cd ignore-files
-pip install -e .[test]
+pip install .[test]
 ```
 
 ## Running the tests
