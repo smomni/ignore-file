@@ -1,6 +1,18 @@
+import fnmatch
 from pathlib import Path
 from typing import Generator
 __version__ = '0.1.0'
+
+
+def match(relative_path: Path, pattern: str) -> bool:
+    """
+    Match a relative pattern against a glob-style pattern using stdlib fnmatch.
+
+    :param relative_path:
+    :param pattern:
+    :return:
+    """
+    return fnmatch.fnmatch(relative_path, pattern)
 
 
 def iterdir(dir_path: Path, ignore_file: str='.ignore') -> Generator[Path, None, None]:
@@ -23,7 +35,7 @@ def iterdir(dir_path: Path, ignore_file: str='.ignore') -> Generator[Path, None,
         if path.is_file():
             for ignore_pattern in ignore_pattern_set:
                 relative_path = path.relative_to(dir_path)
-                if relative_path.match(ignore_pattern):
+                if match(relative_path, ignore_pattern):
                     break
             else:
                 yield path

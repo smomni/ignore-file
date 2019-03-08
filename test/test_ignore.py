@@ -23,41 +23,33 @@ def test_iterdir_returns_generator_for_paths(shared_datadir):
         assert isinstance(path, Path)
 
 
+def test_iterdir_ignore_none(shared_datadir):
+    write_ignore_file(shared_datadir)
+    path_arr = list(iterdir(shared_datadir))
+    assert 9 == len(path_arr)
+
+
 def test_iterdir_ignore_bar_directory(shared_datadir):
     write_ignore_file(shared_datadir, ['bar/*'])
     path_arr = list(iterdir(shared_datadir))
-    assert shared_datadir / 'bar' / 'foo' not in path_arr
-    assert shared_datadir / 'bar' / 'bar.csv' not in path_arr
     assert 4 == len(path_arr)
 
 
 def test_iterdir_ignore_baz_directory(shared_datadir):
     write_ignore_file(shared_datadir, ['baz/*'])
     path_arr = list(iterdir(shared_datadir))
-    assert shared_datadir / 'baz' / 'foo' not in path_arr
-    assert shared_datadir / 'baz' / 'bar' not in path_arr
-    assert shared_datadir / 'baz' / 'baz.csv' not in path_arr
-    assert 3 == len(path_arr)
+    assert 6 == len(path_arr)
 
 
 def test_iterdir_ignore_foo_files(shared_datadir):
-    write_ignore_file(shared_datadir, ['foo'])
+    write_ignore_file(shared_datadir, ['foo', '*/foo'])
     path_arr = list(iterdir(shared_datadir))
-    assert 3 == len(path_arr)
-    assert shared_datadir / 'baz' / 'bar' in path_arr
-    assert shared_datadir / 'baz' / 'baz.csv' in path_arr
-    assert shared_datadir / 'bar' / 'bar.csv' in path_arr
-
-
-def test_iterdir_ignore_foo_directory(shared_datadir):
-    write_ignore_file(shared_datadir, ['foo/*'])
-    path_arr = list(iterdir(shared_datadir))
-    assert 6 == len(path_arr)
+    assert 5 == len(path_arr)
 
 
 def test_iterdir_ignore_csv_files(shared_datadir):
     write_ignore_file(shared_datadir, ['*.csv'])
     path_arr = list(iterdir(shared_datadir))
-    assert 4 == len(path_arr)
+    assert 6 == len(path_arr)
     for path in path_arr:
         assert path.suffix != '.csv'

@@ -15,6 +15,10 @@ for path in iterdir(dir_path, ignore_file='.myignore'):
     print(path)
 ```
 
+Pattern examples:
+
+* `dir/*`: All files in directory `dir/` and its subdirectories
+* `*.ext`: All files with extension `.ext`
 
 ## Installing
 
