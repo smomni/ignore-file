@@ -23,7 +23,7 @@ setup(
     install_requires=[],
     extras_require={
         'dev': [],
-        'test': ['pytest', 'pytest-cov', 'pytest-datadir'],
+        'test': ['pytest', 'pytest-datadir'],
         'docs': []
     },
     scripts=[]
