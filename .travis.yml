@@ -1,0 +1,20 @@
+  language: python
+  os:
+    - linux
+  cache: pip
+  python:
+    - 3.6
+  install:
+    - pip install -r requirements.txt
+    - pip install -e .[test]
+  script:
+    - pytest
+  deploy:
+    provider: pypi
+    user: "smomni"
+    password:
+      secure: "DOV/JebhGg8GnGhMd31ykvltOtEqhMxSAT/4F6uLZ/kRCsn3onwj34MlH8XAKKx7otNIyuusPi6IqTgeu7EPVFZ8aTKVd1C2Y9zsD1QPW0c09/MrYrI+yMmkGlKbvKDc8aOG31JXJfAhxBKWfuZEbRmqYIS1xVqFHsuE+4HtVGTtI9JXP2CDO7DDrCRY8CuIZde70kmMd8cxOGbCuuK2cMqKNAkyM1nZgfHaCkrXMoB6IqKZRMgw+4Fnv5
+        mgWigrtCC+2zkwThTPRtIvsJhReLjl9EQ36jeLYVdTqQQ484/s4HpZg+L4Q7lksDp5zRc9um4cmf2R55i8G3Vr88tn3ymtz9nmfluTpPwwqEBUP3hGbA8JemiJMqmFFV3UfFpqsBE/2FcLkuv+lSIKKXLPH9a12tmKjlGHZQXiM1sNejpyPT8nrlBBIwqBaPetj0X2AVam2YHA92N9LEYw62GZ0QVHXJSY8uT061EShx976jiGqmoblMSe+lQG2xTef0J
+        RwrLc71dtyRf6ymmtTIsbMkyIpKwFSKTT0ABigHWTJcV6PBgCAPhKvgyoatM7Y1NPZAfS676YpCx9ikeIW9b3WqEgb7UEpB4V/OP7eyuokotJS9ctsaT8Y40KqcE2BZmIqJrqFX+J08UolT2N/lNiFphpV9SDgLdIUi94JTDX9Ok="
+    on:
+      tags: true
