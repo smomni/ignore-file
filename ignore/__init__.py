@@ -1,7 +1,7 @@
 import fnmatch
 from pathlib import Path
 from typing import Generator, Union
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 def match(relative_path: Path, pattern: str) -> bool:
