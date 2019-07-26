@@ -62,3 +62,11 @@ def test_iterdir_ignore_file_location_can_be_specified(datadir, shared_datadir):
     assert 6 == len(path_arr)
     for path in path_arr:
         assert path.suffix != '.csv'
+
+
+def test_iterdir_ignore_files_in_root_but_include_files_in_subdirectories(shared_datadir):
+    write_ignore_file(shared_datadir, ['*/'])
+    path_arr = list(iterdir(shared_datadir))
+    for path in path_arr:
+        print(path)
+    assert 8 == len(path_arr)
