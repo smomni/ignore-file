@@ -1,5 +1,6 @@
 import types
 import pytest
+import timeit
 from typing import List
 from pathlib import Path
 from ignore import iterdir
@@ -70,3 +71,39 @@ def test_iterdir_ignore_files_in_root_but_include_files_in_subdirectories(shared
     for path in path_arr:
         print(path)
     assert 8 == len(path_arr)
+
+
+@pytest.mark.pathspec
+def test_pathspec_ignore_csv_files(shared_datadir):
+    import pathspec
+    spec_str = """
+    *
+    !*.csv
+    """
+    spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, spec_str.splitlines())
+    pathspec_path_arr = list(map(Path, spec.match_tree(shared_datadir)))
+    write_ignore_file(shared_datadir, ['*.csv'])
+    path_arr = list(iterdir(shared_datadir))
+    assert len(pathspec_path_arr) == len(path_arr)
+
+
+@pytest.mark.pathspec
+@pytest.mark.parametrize('n', (100, 1000))
+def test_ignore_file_vs_pathspec(n, shared_datadir):
+    pathspec_str = "spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, spec_str.splitlines()); " \
+                   "path_arr = list(map(Path, spec.match_tree(str(shared_datadir))))"
+    spec_str = """
+    *
+    !*.csv
+    """
+    pathspec_time = timeit.timeit(
+        pathspec_str,
+        number=n,
+        setup="from pathlib import Path; import pathspec",
+        globals=locals()
+    )
+    write_ignore_file(shared_datadir, ['*.csv'])
+    ignore_str = "list(iterdir(shared_datadir))"
+    ignore_time = timeit.timeit(ignore_str, number=n, setup="from ignore import iterdir", globals=locals())
+    print(f'pathspec {pathspec_time}s vs {ignore_time}s ignore_file (n={n}): '
+          f'{ignore_time / pathspec_time} times faster than ignore_file')

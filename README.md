@@ -2,7 +2,9 @@
 
 # ignore-file
 
-Ignore glob-style patterns similar to .gitignore and .dockerignore.
+Ignore glob-style patterns similar to .gitignore and .dockerignore. Similar to projects:
+
+* [pathspec](https://pypi.org/project/pathspec/)
 
 ## Usage
 
