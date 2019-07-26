@@ -1,7 +1,7 @@
 import types
 import pytest
 import timeit
-from typing import List
+from typing import List, Union, Generator
 from pathlib import Path
 from ignore import iterdir
 
@@ -73,18 +73,30 @@ def test_iterdir_ignore_files_in_root_but_include_files_in_subdirectories(shared
     assert 8 == len(path_arr)
 
 
+def pathspec_iterdir(
+        dir_path: Path, ignore_file_name_or_path: Union[str, Path]='.ignore'
+) -> Generator[Path, None, None]:
+    import pathspec
+    if isinstance(ignore_file_name_or_path, str):
+        ignore_file_path = dir_path / ignore_file_name_or_path
+    else:
+        ignore_file_path = ignore_file_name_or_path
+    if not ignore_file_path.exists():
+        raise FileNotFoundError(f'Missing ignore file {ignore_file_path}')
+    spec_str = ignore_file_path.read_text()
+    spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, spec_str.splitlines())
+    for node in spec.match_tree(dir_path):
+        yield Path(node)
+
+
 @pytest.mark.pathspec
 def test_pathspec_ignore_csv_files(shared_datadir):
     import pathspec
-    spec_str = """
-    *
-    !*.csv
-    """
-    spec = pathspec.PathSpec.from_lines(pathspec.patterns.GitWildMatchPattern, spec_str.splitlines())
-    pathspec_path_arr = list(map(Path, spec.match_tree(shared_datadir)))
+    write_ignore_file(shared_datadir, ['*', '!.ignore', '!*.csv'])
+    pathspec_path_arr = list(pathspec_iterdir(shared_datadir))
     write_ignore_file(shared_datadir, ['*.csv'])
-    path_arr = list(iterdir(shared_datadir))
-    assert len(pathspec_path_arr) == len(path_arr)
+    ignore_path_arr = list(iterdir(shared_datadir))
+    assert len(pathspec_path_arr) == len(ignore_path_arr)
 
 
 @pytest.mark.pathspec
